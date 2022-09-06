@@ -1,2 +1,4 @@
-# gpwfs-capstone
-Get Programming with F# capstone exercises
+# Get Programming with F#
+Issac Abraham, Manning
+
+### Capstone exercises
