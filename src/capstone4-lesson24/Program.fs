@@ -25,13 +25,11 @@ let loadAccount () =
     account
 
 let commands =
-    seq {
-        while true do
-            printf "Select a command (d)eposit, (w)ithdraw or e(x)it: "
-            let cmd = Console.ReadKey().KeyChar
-            printfn ""
-            yield cmd
-    }
+    Seq.initInfinite (fun _ ->
+        printf "Select a command (d)eposit, (w)ithdraw or e(x)it: "
+        let cmd = Console.ReadKey().KeyChar
+        printfn ""
+        cmd)
 
 let isStopCommand = (=) Exit
 
@@ -52,7 +50,10 @@ let tryGetBankOperation cmd =
 let tryGetAmount cmd =
     printf "Enter amount: "
     match Console.ReadLine() |> System.Decimal.TryParse with
-    | true, 0M | false, _ ->
+    | false, _ ->
+        printfn "Invalid amount"
+        None
+    | true, amount when amount <= 0M ->
         printfn "Invalid amount"
         None
     | true, amount -> Some (cmd, amount)
