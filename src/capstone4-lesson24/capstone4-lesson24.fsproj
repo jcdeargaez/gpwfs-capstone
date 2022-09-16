@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>capstone4_lesson24</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Domain.fs" />
+    <Compile Include="BankOperation.fs" />
+    <Compile Include="Transaction.fs" />
+    <Compile Include="FileRepository.fs" />
+    <Compile Include="Account.fs" />
+    <Compile Include="Auditing.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+</Project>
