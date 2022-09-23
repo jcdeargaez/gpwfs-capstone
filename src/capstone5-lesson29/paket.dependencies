@@ -1,0 +1,5 @@
+source https://api.nuget.org/v3/index.json
+
+nuget FSharp.Core
+nuget Newtonsoft.json >= 13.0.1
+nuget PropertyChanged.Fody >= 4.0.3
