@@ -1,0 +1,4 @@
+FluentMigrator
+FluentMigrator.Runner
+FluentMigrator.Runner.SQLite
+Microsoft.Data.Sqlite
