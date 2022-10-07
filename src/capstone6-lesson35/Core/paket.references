@@ -1,3 +1,3 @@
-SQLProvider
-Microsoft.Data.SQLite
-System.Data.Sqlite
+System.Data.SqlClient
+FSharp.Data.SqlClient
+Newtonsoft.Json

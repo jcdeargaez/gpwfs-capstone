@@ -13,8 +13,8 @@ static IServiceProvider CreateServices() =>
     new ServiceCollection()
         .AddFluentMigratorCore()
         .ConfigureRunner(rb => rb
-            .AddSQLite()
-            .WithGlobalConnectionString("Data Source=BankAccountDB.db")
+            .AddSqlServer()
+            .WithGlobalConnectionString(@"Data Source=(localdb)\MSSQLLocalDB;Database=BankAccountDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True")
             .ScanIn(typeof(AddAccountTable).Assembly).For.Migrations())
         .AddLogging(lb => lb.AddFluentMigratorConsole())
         .Configure<RunnerOptions>(opt => opt.Profile = "Development")

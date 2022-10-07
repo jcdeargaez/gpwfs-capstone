@@ -2,6 +2,9 @@ source https://api.nuget.org/v3/index.json
 
 nuget FluentMigrator
 nuget FluentMigrator.Runner
-nuget Microsoft.Data.Sqlite
-nuget SQLProvider
-nuget System.Data.Sqlite
+nuget FluentMigrator.Runner.SqlServer
+nuget Newtonsoft.Json
+nuget System.Data.SqlClient
+nuget FSharp.Data.SqlClient
+nuget FSharp.Core
+nuget PropertyChanged.Fody >= 4.0.3

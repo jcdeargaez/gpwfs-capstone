@@ -5,8 +5,12 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Scratchpad.fs" />
-    <Compile Include="Program.fs" />
+    <Compile Include="Domain.fs" />
+    <Compile Include="Account.fs" />
+    <Compile Include="SqlRepository.fs" />
+    <Compile Include="FileRepository.fs" />
+    <Compile Include="BankApi.fs" />
+    <None Include="paket.references" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
