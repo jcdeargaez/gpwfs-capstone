@@ -5,7 +5,7 @@ open Capstone6.Domain
 
 [<AutoOpen>]
 module private DB =
-    let [<Literal>] Conn = "Data Source=(localdb)\MSSQLLocalDB;Database=BankAccountDB;Integrated Security=True;Connect Timeout=60"
+    let [<Literal>] Conn = @"Data Source=(localdb)\MSSQLLocalDB;Database=BankAccountDB;Integrated Security=True;Connect Timeout=60"
     type BankAccountsDB = SqlProgrammabilityProvider<Conn>
     type GetAccountId = SqlCommandProvider<"SELECT TOP 1 AccountId FROM dbo.Account WHERE Owner = @owner", Conn, SingleRow = true>
     type FindTransactions = SqlCommandProvider<"SELECT Timestamp, OperationId, Amount FROM dbo.AccountTransaction WHERE AccountId = @accountId", Conn>
