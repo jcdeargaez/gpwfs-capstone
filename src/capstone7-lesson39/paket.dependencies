@@ -1,0 +1,9 @@
+source https://api.nuget.org/v3/index.json
+
+nuget Giraffe
+nuget System.Data.SqlClient
+nuget FSharp.Data.SqlClient
+nuget Newtonsoft.Json
+nuget FluentMigrator
+nuget FluentMigrator.Runner
+nuget FluentMigrator.Runner.SqlServer
