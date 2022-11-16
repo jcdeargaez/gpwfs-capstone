@@ -33,15 +33,19 @@ let private tryFindAccountId ownerName =
 let loadTransactions ownerName =
     match tryFindAccountId ownerName with
     | Some accountId ->
-        async.Bind (
-            buildAccountDirectoryPath ownerName accountId
-            |> Directory.EnumerateFiles
-            |> Seq.map (fun file ->
-                async.Bind (File.ReadAllTextAsync file |> Async.AwaitTask,
-                    fun text -> JsonConvert.DeserializeObject<Transaction> text |> async.Return))
-            |> Async.Parallel,
-            fun transactions -> (ownerName, Some accountId, Seq.ofArray transactions) |> async.Return)
-    | None -> (ownerName, None, Seq.empty) |> async.Return
+        async {
+            let! transactions =
+                buildAccountDirectoryPath ownerName accountId
+                |> Directory.EnumerateFiles
+                |> Seq.map (fun file ->
+                    async {
+                        let! text = File.ReadAllTextAsync file |> Async.AwaitTask
+                        return JsonConvert.DeserializeObject<Transaction> text
+                    })
+                |> Async.Parallel
+            return ownerName, Some accountId, Seq.ofArray transactions
+        }
+    | None -> async { return ownerName, None, Seq.empty }
 
 /// Logs a transaction in its own file in the account directory
 let writeTransaction ownerName accountId transaction =

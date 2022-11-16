@@ -22,32 +22,40 @@ let toBankOperation =
 
 /// Queries all transactions for an account
 let getTransactions (connectionString : string) accountId =
-    async.Bind (DB.FindTransactions.Create(connectionString).AsyncExecute(accountId),
-        Seq.map (fun record -> { Timestamp = record.Timestamp; Operation = toBankOperation record.OperationId; Amount = record.Amount })
-        >> async.Return)
+    async {
+        let! records = DB.FindTransactions.Create(connectionString).AsyncExecute(accountId)
+        return
+            records
+            |> Seq.map (fun record -> { Timestamp = record.Timestamp; Operation = toBankOperation record.OperationId; Amount = record.Amount })
+    }
 
 /// Queries the accountId and transactions given the owner name.
 /// Returns a tuple of the owner name, optional accountId and transactions sequence
 let getAccountAndTransactions (connectionString : string) owner =
-    async.Bind (DB.GetAccountId.Create(connectionString).AsyncExecute(owner),
-        function
+    async {
+        let! accountIdOpt = DB.GetAccountId.Create(connectionString).AsyncExecute(owner)
+        match accountIdOpt with
         | Some accountId ->
-            async.Bind (getTransactions connectionString accountId,
-                fun transactions -> (owner, Some accountId, transactions) |> async.Return)
-        | None -> (owner, None, Seq.empty) |> async.Return)
+            let! transactions = getTransactions connectionString accountId
+            return owner, Some accountId, transactions
+        | None -> return owner, None, Seq.empty
+    }
 
 /// Inserts an account if an owner does not have one yet
 let writeAccount (connectionString : string) ownerName accountId =
-    try
-        async.Bind(DB.InsertAccount.Create(connectionString).AsyncExecute(ownerName, accountId),
-            Ok >> async.Return)
-    with
-    | ex -> (Error ex.Message) |> async.Return
+    async {
+        try
+            do! DB.InsertAccount.Create(connectionString).AsyncExecute(ownerName, accountId) |> Async.Ignore
+            return Ok ()
+        with
+        | ex -> return Error ex.Message
+    }
 
 /// Records a transaction on an account. If the account does not exist yet, it is created
 let writeTransaction (connectionString : string) ownerName accountId transaction =
-    async.Bind (writeAccount connectionString ownerName accountId,
-        function
+    async {
+        let! res = writeAccount connectionString ownerName accountId
+        match res with
         | Error err when not (err.Contains "Violation of PRIMARY KEY") -> failwith $"Failure writing account: {err}"
         | _ ->
             let operationId =
@@ -55,7 +63,8 @@ let writeTransaction (connectionString : string) ownerName accountId transaction
                 | Withdraw -> DB.OperationId.Withdraw
                 | Deposit -> DB.OperationId.Deposit
 
-            DB.InsertTransaction
-                .Create(connectionString)
-                .AsyncExecute(accountId, transaction.Timestamp, operationId, transaction.Amount)
-                |> Async.Ignore)
+            do! DB.InsertTransaction
+                    .Create(connectionString)
+                    .AsyncExecute(accountId, transaction.Timestamp, operationId, transaction.Amount)
+                    |> Async.Ignore
+    }

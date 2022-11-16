@@ -4,24 +4,33 @@ module Capstone7.BankApi
 open Capstone7.Domain
 
 let private loadAccount getAccountAndTransactions customer =
-    async.Bind (getAccountAndTransactions customer.Name,
-        Account.loadAccount >> async.Return)
+    async {
+        let! accountDetails = getAccountAndTransactions customer.Name
+        return Account.loadAccount accountDetails
+    }
 
 let private loadTransactionHistory getAccountAndTransactions customer =
-    async.Bind (getAccountAndTransactions customer.Name,
-        fun (_, _, transactions) -> transactions |> async.Return)
+    async {
+        let! (_, _, transactions) = getAccountAndTransactions customer.Name
+        return transactions
+    }
 
 let private deposit getAccountAndTransactions writeTransaction amount customer =
-    async.Bind (loadAccount getAccountAndTransactions customer,
-        fun account ->
+    async {
+        let! account = loadAccount getAccountAndTransactions customer
+        return
             account
             |> Account.auditAs Deposit writeTransaction amount
             |> Result.defaultValue account
-            |> async.Return)
+    }
 
 let private withdraw getAccountAndTransactions writeTransaction amount customer =
-    async.Bind (loadAccount getAccountAndTransactions customer,
-        Account.auditAs Withdraw writeTransaction amount >> async.Return)
+    async {
+        let! account = loadAccount getAccountAndTransactions customer
+        return
+            account
+            |> Account.auditAs Withdraw writeTransaction amount
+    }
 
 let private buildApi getAccountAndTransactions writeTransaction =
     { new IBankApi with
