@@ -1,0 +1,17 @@
+source https://api.nuget.org/v3/index.json
+
+nuget coverlet.collector
+nuget fscheck.xunit
+nuget Giraffe
+nuget Microsoft.NET.Test.Sdk
+nuget nsubstitute
+nuget System.Data.SqlClient
+nuget FSharp.Data.SqlClient
+nuget Newtonsoft.Json
+nuget FluentMigrator
+nuget FluentMigrator.Runner
+nuget FluentMigrator.Runner.SqlServer
+nuget unquote
+nuget xunit
+nuget xunit.runner.console
+nuget xunit.runner.visualstudio

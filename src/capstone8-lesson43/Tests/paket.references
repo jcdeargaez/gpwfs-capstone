@@ -1,0 +1,10 @@
+Microsoft.NET.Test.Sdk
+xunit
+xunit.runner.console
+xunit.runner.visualstudio
+coverlet.collector
+unquote
+nsubstitute
+newtonsoft.json
+giraffe
+fscheck.xunit
